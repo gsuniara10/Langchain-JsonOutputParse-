@@ -1,0 +1,24 @@
+from langchain_groq import ChatGroq
+from dotenv import load_dotenv
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+
+load_dotenv()
+
+llm = ChatGroq(
+    model="llama-3.1-8b-instant"
+    )
+
+output_parse_json = JsonOutputParser()
+
+prompt_output_json = PromptTemplate(
+    template= "Your are expert fictional writer, Please provide a ficitional charater name, his occupation, made-up country he lives in, his full address, his wife name and his age /n {format_instruction}",
+    input_variables=[], 
+    partial_variables={'format_instruction':output_parse_json.get_format_instructions()}
+)
+
+llm_chain = prompt_output_json | llm | output_parse_json
+
+json_output = llm_chain.invoke({})
+
+print(json_output)
